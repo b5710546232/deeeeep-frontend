@@ -1,19 +1,34 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
-            aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-        <a class="navbar-brand text-center" href="#!"><strong>Deeeep</strong></a>
-
-        <!--<div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-            <ul class="navbar-nav mr-auto mt-2 mt-md-0">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#!">Home
-          <span class="sr-only">(current)</span>
-        </a>
-                </li>
-            </ul>
-        </div>-->
+    <nav class="navbar navbar-dark bg-primary text-center">
+    <div class=""><h2>Deeeeep</h2></div>
+    <p class="text">Rain calendar prediction</p>
     </nav>
 </template>
+
+<style scoped>  
+
+.navbar .navbar-nav {
+    display: inline-block;
+    float: none;
+    border-color:transparent;
+}
+.bg-primary{
+    background-color:#282a36!important;
+}
+.navbar .navbar-collapse {
+    text-align: center;
+}
+p{
+    padding:0;
+    color:#8be9fd;   
+    margin-bottom:2px;
+}
+.container{
+    width:100%;
+    text-align:center;
+}
+h2{
+    color:#8be9fd;
+    margin-bottom:3px;
+}
+</style>

@@ -1,12 +1,28 @@
 <template>
   <div class="home">
-    <div class="input-search-container">
-      <div class="search-bar">
-      <gmap-autocomplete  :value="description" class="form-control" @place_changed="setPlace">
-    </gmap-autocomplete>
+    <div class="search-container">
+      <div class="container">
+
+        <div class="row">
+          <div class="col-10">
+
+            <div class="search-bar ">
+              <div class="inner-addon left-addon">
+              <i class="fa fa-search"></i>
+              <gmap-autocomplete :value="description" class="form-control search-input" @place_changed="setPlace">
+              </gmap-autocomplete>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-2">
+            <button class="button btn" @click="onClickPredict()">Predict</button>
+          </div>
+
+        </div>
+      </div>
     </div>
-    </div>
-    <div class="map-container container">
+    <div class="map-container">
       <gmap-map :center="latLng" :zoom="zoom" style="width: 100%; height: 100%">
         <gmap-marker :key="index" v-for="(m, index) in markers" :position="m.position" @position_changed="updateChild(m, 'position', $event)"
           :clickable="true" :draggable="true" @click="onClickMarker(m)" @dragend="onDragEnd(m)"></gmap-marker>
@@ -15,14 +31,30 @@
 
     <!--<div class="">marker : lat{{this.markers[0].position.lat.toFixed(6)}}, lng: {{this.markers[0].position.lng.toFixed(6)}}</div>-->
     <!--<div class="">{{latLng.lat}}, {{latLng.lng}}</div>-->
-    <modal name="hello-world" class="information-modal" :scrollable="true" :adaptive="true" width="80%" height="auto">
+
+
+
+    <!--calendar-->
+    <modal name="calendar-modal" class="information-modal" :scrollable="true" :adaptive="true" width="80%" height="auto">
       <div class="text-center">
-        <!--<img class="img" src="../assets/mock.png" alt="">-->
-        <div class="container">
+        <div class="container infomation-modal-content">
           <full-calendar :events="calendarEvents" :firstDay="3" locale="en"></full-calendar>
         </div>
       </div>
     </modal>
+
+<!--predict-->
+<!--มีใส่โล ใส่วัน กด แล้วก้ออกมาเปนปริมาณน้ำฝน-->
+     <modal name="predict-modal" class="information-modal" :scrollable="true" :adaptive="true" width="80%" height="300px">
+      <div class="text-center">
+        <div class="container infomation-modal-content">
+          Predict-modal
+        </div>
+      </div>
+    </modal>
+
+
+
   </div>
 </template>
 
@@ -52,9 +84,9 @@
         calendarEvents: [
           {
             // Home.vue?6e55:95 max 2017-10-30 23:00:00 min 2017-09-31 09:00:00
-            title : 'rain',
-            start : moment(),
-            end : moment().add(3,'days')
+            title: 'rain',
+            start: moment(),
+            end: moment().add(3, 'days')
           }
         ],
       }
@@ -76,36 +108,32 @@
       },
       onClickMarker(marker) {
         this.$nextTick(() => {
-          this.$modal.show('hello-world')
+          this.$modal.show('calendar-modal')
           // latLng=m.position
         })
         // alert('ok')
       },
-      fetchRain(){
+      fetchRain() {
         const lat_suffix = '.362634'
         const lng_suffix = '.986175'
-         let lat = this.markers[0].position.lat.toFixed(0)+lat_suffix
-        let lng = this.markers[0].position.lng.toFixed(0)+lng_suffix
-        let API = `http://54.169.99.243:1921/rain/${lat}/${lng}`
-        return axios.get(API).then((res)=>{
-          let data = JSON.parse(res.data)
-          let max = moment(data[0].date)
-          let min = moment(data[0].date)
-          
-          let maxDate = data.sort((a,b)=>{ return ( moment(a.date) - moment(b.date) ); }).pop().date;
-          let minDate = data.sort((b,a)=>{ return ( moment(a.date) - moment(b.date) ); }).pop().date;
-          this.calendarEvents = [
-             {
-              title : 'rain',
-              start :moment(minDate),
-              end : moment(maxDate)
-            }
-          ]
-          console.warn('max',maxDate,'min',minDate)
+        let lat = this.markers[0].position.lat.toFixed(0) + lat_suffix
+        let lng = this.markers[0].position.lng.toFixed(0) + lng_suffix
+        let API = `http://128.199.88.139:5050/?lat=${lat}&long=${lng}`
+        // let API = `http://54.169.99.243:1921/rain/${lat}/${lng}`
+        return axios.get(API).then((res) => {
+          let data = res.data.map((o)=>{
+            o['title'] = 'rain'
+            return o
+          })
+          this.calendarEvents = data
+          console.log('done')
           return data
-        }).catch((error)=>{
+        }).catch((error) => {
           console.error(error)
         })
+      },
+      onClickPredict(){
+        this.$modal.show('predict-modal')
       },
       onDragEnd(marker) {
         console.log('drag', marker.position)
@@ -129,34 +157,89 @@
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>  
-  .search-bar{
-    padding-left:1%;
-    padding-right:1%;
-    padding-bottom:1%;
+<style scoped>
+  .search-input{
+    padding-left:2em;
   }
-  .input-search-container{
-    background:#2C6FD5;
-    margin-bottom:10px;
+  * {
+    border-radius: 0px;
   }
-  .comp-full-calendar{
-    margin-bottom:10%;
+  .fa-search{
+    color:#8be9fd;
+  }
+
+
+.inner-addon { 
+    position: relative; 
+}
+
+/* style icon */
+.inner-addon .fa {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align icon */
+.left-addon .fa  { left:  0px;}
+.right-addon .fa { right: 0px;}
+
+.input-group-addon{
+  background:#282a36;
+  color:#bd93f9;
+  border-color:transparent;
+}
+  
+  .search-bar {
+    padding-left: 1%;
+    padding-right: 1%;
+    padding-bottom: 2%;
   }
   
-  .information-modal {
+  .search-container {
+    background-color: #282a36!important;
+    margin-bottom: 40px;
+  }
+  
+  .comp-full-calendar {
+    margin-bottom: 10%;
+  }
+  
+  .information-modal {}
+  
+  .form-control {
+    color: #8be9fd;
+    background: #44475a;
+    border-color: transparent;
+  }
+  
+  .form-control:hover,
+  .form-control:focus {
+    border-top: transparent;
+    border-left: transparent;
+    border-right: transparent;
+    border-bottom: 2px solid #8be9fd;
   }
   
   .infomation-modal-content {
-    height: 100%;
-    box-sizing: border-box;
-    padding: 10px;
-    font-size: 13px;
-    overflow: auto;
   }
   
   .map-container {
     height: 70vh;
     width: 100%;
+    padding-right: 3%;
+    padding-left: 3%;
+  }
+
+  .btn{
+    background:transparent;
+    border-color:#8be9fd;
+    color:#8be9fd;
+  }
+  .btn:hover, .btn:active{
+    background:transparent;
+    border-color:#bd93f9;
+    color:#bd93f9;
   }
   
   h1,
