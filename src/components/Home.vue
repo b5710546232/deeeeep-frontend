@@ -122,9 +122,13 @@
         // let API = `http://54.169.99.243:1921/rain/${lat}/${lng}`
         return axios.get(API).then((res) => {
           let data = res.data.map((o)=>{
-            o['title'] = 'rain'
+            o['title'] = o['start']+': '+'rain'
             return o
           })
+          data = data.sort(function(a, b) {
+              return moment(a.start).isBefore(moment(b.start));
+          });
+          console.log(data)
           this.calendarEvents = data
           console.log('done')
           return data
@@ -169,8 +173,8 @@
   }
 
 
-.inner-addon { 
-    position: relative; 
+.inner-addon {
+    position: relative;
 }
 
 /* style icon */
@@ -189,30 +193,30 @@
   color:#bd93f9;
   border-color:transparent;
 }
-  
+
   .search-bar {
     padding-left: 1%;
     padding-right: 1%;
     padding-bottom: 2%;
   }
-  
+
   .search-container {
     background-color: #282a36!important;
     margin-bottom: 40px;
   }
-  
+
   .comp-full-calendar {
     margin-bottom: 10%;
   }
-  
+
   .information-modal {}
-  
+
   .form-control {
     color: #8be9fd;
     background: #44475a;
     border-color: transparent;
   }
-  
+
   .form-control:hover,
   .form-control:focus {
     border-top: transparent;
@@ -220,10 +224,10 @@
     border-right: transparent;
     border-bottom: 2px solid #8be9fd;
   }
-  
+
   .infomation-modal-content {
   }
-  
+
   .map-container {
     height: 70vh;
     width: 100%;
@@ -241,27 +245,27 @@
     border-color:#bd93f9;
     color:#bd93f9;
   }
-  
+
   h1,
   h2 {
     font-weight: normal;
   }
-  
+
   .img {
     max-width: 80%;
     max-height: 80%;
   }
-  
+
   ul {
     list-style-type: none;
     padding: 0;
   }
-  
+
   li {
     display: inline-block;
     margin: 0 10px;
   }
-  
+
   a {
     color: #42b983;
   }
