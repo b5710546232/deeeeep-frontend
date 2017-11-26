@@ -194,7 +194,7 @@
         // let API = `http://54.169.99.243:1921/rain/${lat}/${lng}`
         return axios.get(API).then((res) => {
           let data = res.data.map((o) => {
-            o['title'] = o['start'] + ': ' + 'rain'
+            o['title'] = moment(o['start']).format('LT')+': '+'rain'
             return o
           })
           data = data.sort(function (a, b) {
